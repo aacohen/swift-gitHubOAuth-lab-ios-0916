@@ -18,7 +18,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
-
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        
+        print("GETTTING CALLED OPEN URL!!!")
+        
+        guard let sourceKey = options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String else { return false }
+        
+        print("SourceKey is : \(sourceKey)")
+        
+    
+        if sourceKey == "com.apple.SafariViewService" {
+            
+            print("notification post about to be called")
+            NotificationCenter.default.post(name: Notification.Name.closeSafariVC, object: url)
+            
+            return true
+        }
+        
+        return false
+    }
 
 }
 

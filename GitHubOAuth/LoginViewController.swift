@@ -8,8 +8,10 @@
 
 import UIKit
 import Locksmith
+import SafariServices
 
 class LoginViewController: UIViewController {
+    var safariViewConroller: SFSafariViewController!
     
     @IBOutlet weak var loginImageView: UIImageView!
     @IBOutlet weak var loginButton: UIButton!
@@ -22,8 +24,10 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setUpImageViewAnimation()
+        
+        print("observer about to be called")
+        NotificationCenter.default.addObserver(self, selector: #selector(safariLogin(_:)), name: .closeSafariVC, object: nil)
 
     }
     
@@ -69,10 +73,27 @@ class LoginViewController: UIViewController {
     
     @IBAction func loginButtonTapped(_ sender: UIButton) {
         
+        print("Url is \(GitHubRequestType.oauth.url)")
+        
+        safariViewConroller = SFSafariViewController(url: GitHubRequestType.oauth.url)
+        present(safariViewConroller, animated: true, completion: nil)
     
     }
     
-    
+    func safariLogin(_ notification: Notification) {
+        print("safariLogin called")
+        let url = notification.object as! URL
+        
+        print(url)
+        GitHubAPIClient.request(.token(url: url)) { (json,starred, error) in
+            if error == nil {
+                NotificationCenter.default.post(name: .closeLoginVC, object: nil)
+            }
+        }
+        
+        safariViewConroller.dismiss(animated: true, completion: nil)
+        
+    }
 
 }
 

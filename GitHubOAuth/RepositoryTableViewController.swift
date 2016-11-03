@@ -43,8 +43,10 @@ class RepositoryTableViewController: UITableViewController {
     // MARK: Action
     
     @IBAction func logoutButtonTapped(_ sender: AnyObject) {
-        
+//        if GitHubAPIClient.deleteAccessToken != Error {
+//            //dismiss/close table view controller.
+        }
 
     }
 
-}
+
